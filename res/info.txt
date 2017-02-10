@@ -1,0 +1,1 @@
+Folder where the different resources should be in.
