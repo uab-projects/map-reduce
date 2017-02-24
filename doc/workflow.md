@@ -6,11 +6,11 @@ The first step is to be able to read the file in pieces (split the file while re
 #### Splitting methods
 We've seen three ways to read and split the file, according to what and how we split it:
 1. **By words**:
-   Choose a parameter $n_words$, so we read the file by groups of $n_words$.
+   Choose a parameter $n_{words}$, so we read the file by groups of $n_{words}$.
 2. **By lines**
-   Choose a parameter $n_lines$ so we read the file $n_lines$ by $n_lines$
+   Choose a parameter $n_{lines}$ so we read the file $n_{lines}$ by $n_{lines}$
 3. **By letters**
-   Read $n_letters$ and go reading $n_letters$ by $n_letters$
+   Read $n_{letters}$ and go reading $n_{letters}$ by $n_{letters}$
 
 #### Inputs and outputs
 ##### Inputs
