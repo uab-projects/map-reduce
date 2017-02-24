@@ -1,0 +1,30 @@
+# TODO tasks by files
+ - src
+     - core
+         - [ ] pool
+             - [ ] abstract
+                 - [ ] AbstractPool
+                 - [ ] tests
+             - [ ] map
+                 - [ ] MapPool
+                 - [ ] tests
+             - [ ] red
+                 - [ ] RedPool
+                 - [ ] tests
+         - [ ] splitter
+             - [ ] file
+                 - [ ] FileSplitter
+             - [ ] wordfile
+                 - [ ] WordFileSplitter
+                 - [ ] tests
+             - [ ] letterfile
+                 - [ ] LetterFileSplitter
+                 - [ ] tests
+     - [ ] \_\_main\_\_
+         - [ ] create arguments from cli
+         - [ ] create splitter
+         - [ ] create map
+         - [ ] create reduce
+         - [ ] connect pools
+         - [ ] execute them
+         - [ ] print results
