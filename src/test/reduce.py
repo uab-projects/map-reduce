@@ -15,7 +15,7 @@ LOGGER = logging.getLogger(__name__)
 # Reduce methods
 def join_dicts(item1, item2):
     """
-    Converges the keys for the two items received
+    Converges the keys for the n items received
     """
     dic = {}
     for k in (set(list(item1.keys())+list(item2.keys()))):
@@ -30,10 +30,10 @@ def simple_test():
     LOGGER.info("Creating reduce pool")
     reduce_pool = RedPool(join_dicts)
     reduce_pool.on_done = lambda x: LOGGER.info("Test result: %s", str(x))
-
+    reduce_pool.group_size = 2
     # Adding elements to the pool
     LOGGER.info("Adding items")
-    for i in range(20):
+    for i in range(100):
         reduce_pool.add({"a": 1, "b": 1})
 
     # Close pool
@@ -47,7 +47,7 @@ def simple_test():
 
 if __name__ == "__main__":
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         format="[%(asctime)s][%(name)s][%(levelname)s] %(message)s"
     )
     simple_test()

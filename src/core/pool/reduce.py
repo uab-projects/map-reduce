@@ -8,6 +8,7 @@ the pool to be reduced until no more items can be reduced. This means that is
 a feedback pool.
 """
 from .basic import BasicPool
+from multiprocessing import Lock
 import logging
 
 
@@ -34,23 +35,21 @@ class RedPool(BasicPool):
 
     Attributes:
         _ready (list): list of items waiting for be reduced
-        _subpool (RedPool): next pool where reduces will go
         _group_size (int): number of items to group to apply a reduce task
         _user_on_done (function): method to call when the reduce operation
                                   has finished
                                   the result will be passed as argument
     """
-    __slots__ = ["_ready", "_subpool", "_group_size", "_user_on_done", "_i"]
+    __slots__ = ["_ready", "_group_size", "_user_on_done", "_results"]
 
-    def __init__(self, task, i=0):
+    def __init__(self, task):
         """
         Initializes the reduce pool with an empty list of pending items and
         noop for the _user_on_done function
         """
         super().__init__(task)
         self._ready = []
-        self._subpool = None
-        self._i = i
+        self._results = []
         self._group_size = DEFAULT_MIN_GROUP_SIZE
         self._user_on_done = lambda: None
 
@@ -62,17 +61,15 @@ class RedPool(BasicPool):
         When no more items are incoming, the minimum size for reduce operation
         is ignored.
         """
-        LOGGER.debug("[P%02d] Adding new item to reduce: %s", self._i,
-                     str(item))
+        LOGGER.debug("Adding new item to reduce: %s", str(item))
         # Append to ready queue
         self._ready.append(item)
 
         # Check if enough items to reduce
         if len(self._ready) < self._group_size:
-            LOGGER.debug("[P%02d] Queuing reduce pool item: %s", self._i,
-                         str(item))
+            LOGGER.debug("Queuing reduce pool item: %s", str(item))
         else:
-            LOGGER.debug("[P%02d] Sending %d items to reduce", self._i,
+            LOGGER.debug("Sending %d items to reduce",
                          len(self._ready))
             # Copy arguments list
             item_list = tuple(self._ready)
@@ -92,19 +89,26 @@ class RedPool(BasicPool):
         """
         Calls the user-defined function with the result of the reduce
         """
-        # Check if there's something remaining in the ready queue
-        if len(self._ready) > 0:
-            LOGGER.debug("[P%02d] Adding pending work to subpool", self._i)
-            self._subpool.add(self._ready[0])
-            self._ready = []
-        # Wait for subpool to finish
-        LOGGER.debug("[P%02d] Waiting for subpool %d to finish", self._i,
-                     self._i+1)
-        self._subpool.close()
-        if self._subpool.scheduled > 0:
-            self._subpool.join()
-        self._user_on_done(self._ready)
-        LOGGER.debug("[P%02d] Finished subpool %d", self._i, self._i+1)
+        if len(self._results) == 1 and len(self._ready) == 0:
+            self._user_on_done(self._results[0])
+        else:
+            # Prepare new pool
+            pending = self._ready+self._results
+            subpool = self.__class__(self._task)
+            subpool.group_size = self._group_size
+            subpool.on_done = self._user_on_done
+
+            # Adjust group size
+            if len(pending) < subpool.group_size:
+                while subpool.group_size > len(pending):
+                    subpool.group_size = max(subpool.group_size // 2, 2)
+            # Add items
+            for item in pending:
+                subpool.add(item)
+
+            # Wait
+            subpool.close()
+            subpool.join()
 
     def _on_task_success(self, result):
         """
@@ -115,14 +119,8 @@ class RedPool(BasicPool):
         Args:
             result (object): result returned by the task
         """
-        # Create subpool to add work if don't exit
-        if self._subpool is None:
-            LOGGER.debug("[P%02d] Creating subpool %d for recursive reduces",
-                         self._i, self._i+1)
-            self._subpool = self.__class__(self._task, self._i+1)
-            self._subpool.on_done = self._user_on_done
         # Add work to subpool
-        self._subpool.add(result)
+        self._results.append(result)
         super()._on_task_success(result)
 
     @property
