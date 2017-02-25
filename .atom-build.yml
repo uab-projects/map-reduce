@@ -1,0 +1,16 @@
+cmd: "python"
+name: "Default build"
+args:
+ - "src"
+sh: true
+targets:
+  test-splitter-word:
+      cmd: "python"
+      args:
+       - "-m"
+       - "src.core.splitter.wordfile"
+  test-pool-reduce:
+      cmd: "python"
+      args:
+       - "-m"
+       - "src.test.reduce"
