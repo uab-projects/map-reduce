@@ -1,0 +1,1 @@
+can't pickle _thread.lock objects
