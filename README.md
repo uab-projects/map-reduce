@@ -1,10 +1,9 @@
-# Basic Python Template
-Basic Python 3 Template that includes cli argument parser and logger in order to start coding fast and forget about the skeleton.
+# Text Counter
+Application writen in python 3.4 that will count the occurrences words (or letters in the optional case) in the files passed as a parameter using the map-reduce paradigm.
 
 ## Running the application
 ```python
 python src [-h]
 ```
-> Rename the src folder with the application name
 
-Made with love by @ccebrecos
+<> with ♥ in ETSE, UAB by ccebrecos & davidlj.
