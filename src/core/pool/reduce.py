@@ -8,7 +8,6 @@ the pool to be reduced until no more items can be reduced. This means that is
 a feedback pool.
 """
 from .basic import BasicPool
-from multiprocessing import Lock
 import logging
 
 
