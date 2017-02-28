@@ -1,7 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
-#Libraries
+"""
+Main entry point of the software. Chooses the algorithm to apply and the inputs
+and outputs
+"""
+# Libraries
 import os
 import sys
 import platform
@@ -9,38 +12,72 @@ import logging
 import core.log
 
 from cli.arguments.parser import DEFAULT_PARSER
-from cli.arguments.constants import *
+from cli.arguments.constants import LOGS_LEVELS, LOGS, LOG_DEFAULT,\
+                                    TASK_DEFAULT
+from cli.controller import text_counter
 
-#Constants
-LOGGER = logging.getLogger(__name__)
+# Constants
+LOGGER = None
 
-# variables
-"""
-Arguments namespace
-"""
-args = None
 
-#Functions
-"""
-Takes the system arguments vector and tries to parse the arguments in it given
-the argument parser specified and returns the namespace generated
+# Functions
+def parse_arguments(parser, args=None):
+    """
+    Given an argument parser and arguments as a list, parses the arguments and
+    returns the parsed arguments
 
-@param 	parser 	the ArgumentParser objects to use to parse the arguments
-@param 	args 	arguments to parse (default is sys.argv)
-@return namespace of parsed arguments
-"""
-def parseArguments(parser, args=None):
-	return parser.parse_args(args)
+    Args:
+        parser (ArgumentParser): argument parser to use with the args
+        args (list): list of string arguments
+    Returns:
+        namespace: arguments namespace
+    """
+    return parser.parse_known_args(args)[0]
+
 
 if __name__ == "__main__":
-	# Prepare coding
-	if platform.system() == "Windows":
-		os.system("chcp 65001")
-	args = parseArguments(DEFAULT_PARSER)
-	# Switching log level
-	root_logger = logging.getLogger()
-	root_logger.setLevel(LOGS_LEVELS[LOGS.index(args.log_level)])
-	#Welcome
-	LOGGER.info("Welcome !")
-	#Exiting
-	LOGGER.info("Bye !")
+    # Prepare coding
+    if platform.system() == "Windows":
+        os.system("chcp 65001")
+    # Load arguments
+    args = parse_arguments(DEFAULT_PARSER)
+    # Init logging
+    core.log.init()
+    LOGGER = logging.getLogger(__name__)
+
+    # Set task and log_level
+    task = args.task
+    controller = None
+    log_level = args.log_level
+
+    # No task specified
+    if task is None:
+        # Check if help is wanted
+        if args.help:
+            DEFAULT_PARSER.print_help()
+            sys.exit(0)
+        # Task is default
+        task = TASK_DEFAULT
+
+    # Change log level
+    root_logger = logging.getLogger()
+    root_logger.setLevel(LOGS_LEVELS[LOGS.index(log_level)])
+    if log_level != LOG_DEFAULT:
+        LOGGER.info("Changed log level to %s", log_level)
+
+    # Switch task and parse
+    if task == "text-counter":
+        LOGGER.info("Text-Counter implementation selected")
+        controller = text_counter.controller
+    else:
+        LOGGER.error("No valid task has been selected, check usage")
+        sys.exit(1)
+
+    # Welcome
+    LOGGER.info("Welcome to map-reduce testing")
+
+    # Let control to controller
+    controller(args)
+
+    # Exiting
+    LOGGER.info("Good bye!")
