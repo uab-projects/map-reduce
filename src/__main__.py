@@ -12,18 +12,12 @@ import logging
 import core.log
 
 from cli.arguments.parser import DEFAULT_PARSER
-from cli.arguments.word_count import WORD_COUNT_PARSER
 from cli.arguments.constants import LOGS_LEVELS, LOGS, LOG_DEFAULT,\
                                     TASK_DEFAULT
+from cli.controller import text_counter
 
 # Constants
 LOGGER = None
-
-# Variables
-"""
-Arguments namespace
-"""
-args = None
 
 
 # Functions
@@ -53,6 +47,7 @@ if __name__ == "__main__":
 
     # Set task and log_level
     task = args.task
+    controller = None
     log_level = args.log_level
 
     # No task specified
@@ -63,24 +58,26 @@ if __name__ == "__main__":
             sys.exit(0)
         # Task is default
         task = TASK_DEFAULT
+
+    # Change log level
+    root_logger = logging.getLogger()
+    root_logger.setLevel(LOGS_LEVELS[LOGS.index(log_level)])
+    if log_level != LOG_DEFAULT:
+        LOGGER.info("Changed log level to %s", log_level)
+
     # Switch task and parse
-    if task == "word-count":
-        args = parse_arguments(WORD_COUNT_PARSER)
-    elif task == "letter-count":
-        LOGGER.error("Not implemented yet")
-        sys.exit(1)
+    if task == "text-counter":
+        LOGGER.info("Text-Counter implementation selected")
+        controller = text_counter.controller
     else:
         LOGGER.error("No valid task has been selected, check usage")
         sys.exit(1)
 
     # Welcome
     LOGGER.info("Welcome to map-reduce testing")
-    root_logger = logging.getLogger()
 
-    # Change log level
-    if log_level != LOG_DEFAULT:
-        root_logger.setLevel(LOGS_LEVELS[LOGS.index(log_level)])
-        LOGGER.info("Changed log level to %s", log_level)
+    # Let control to controller
+    controller(args)
 
     # Exiting
     LOGGER.info("Good bye!")

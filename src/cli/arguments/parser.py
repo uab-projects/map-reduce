@@ -33,8 +33,7 @@ DEFAULT_PARSER = argparse.ArgumentParser(
     Currently the only defined methods are for text word and letter
     counting""",
     epilog="<> with ♥ by @ccebrecos and @davidlj95 at ETSE UAB, Spain",
-    add_help=False,
-    allow_abbrev=True
+    add_help=False
 )
 DEFAULT_PARSER.add_argument(
     "-v", "--version",
