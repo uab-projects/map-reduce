@@ -3,6 +3,8 @@ Defines all the tasks to perform for a text_counter map reduce implementation
 """
 # Libraries
 import logging
+from ..pool.map import MapPool
+from ..pool.reduce import RedPool
 
 # Constants
 LOGGER = logging.getLogger(__name__)
@@ -43,3 +45,27 @@ def reduce_task(*items):
     for key in keys:
         merged[key] = sum([x.get(key, 0) for x in items])
     return merged
+
+
+def create_pools(finalize):
+    """
+    Creates and concatenates the map and reduce pools,
+
+    Args:
+        show_result (function): last function called when reduce stage is
+        completed
+
+    Returns:
+        multiprocessing.Pool: map stage pool with the link between reduce pool
+        created
+    """
+    # Create the reduce pool
+    LOGGER.debug("Creating reduce pool")
+    RP = RedPool(reduce_task)
+    # Assign last task
+    RP.on_done = finalize
+    # Create the map pool
+    LOGGER.debug("Creating map pool")
+    MP = MapPool(map_task, RP)
+
+    return MP
