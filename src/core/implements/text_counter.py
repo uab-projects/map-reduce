@@ -1,5 +1,13 @@
 """
-Defines all the implemented tasks in the main application
+Defines all the tasks to perform for a text_counter map reduce implementation
+"""
+# Libraries
+import logging
+
+# Constants
+LOGGER = logging.getLogger(__name__)
+"""
+    logging.Logger: module logger
 """
 
 
