@@ -2,6 +2,7 @@ cmd: "python"
 name: "Default build"
 args:
  - "src"
+ - "README.md"
 sh: true
 targets:
   test-splitter-word:
