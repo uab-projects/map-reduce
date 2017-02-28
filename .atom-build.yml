@@ -14,3 +14,8 @@ targets:
       args:
        - "-m"
        - "src.test.reduce"
+  test-pool-map:
+     cmd: "python"
+     args:
+      - "-m"
+      - "src.test.map"
