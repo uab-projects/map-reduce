@@ -59,7 +59,7 @@ def create_parser_options(parser):
     parser.add_argument(
         "-v", "--version",
         action="version",
-        version="map-reduce tester 0.1.1"
+        version="map-reduce tester 1.0"
     )
     parser.add_argument(
         "-h", "--help",
