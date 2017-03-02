@@ -41,7 +41,7 @@ class AbstractSplitter(DoneListener):
         Triggered when all data has been read and splits have been sent, tells
         the pool that no more that is incoming
         """
-        self._pool.close()
+        pass
 
     @property
     def pool(self):
