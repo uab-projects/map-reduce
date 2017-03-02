@@ -64,4 +64,10 @@ def create_parser_options(parser):
         help="""if present, will count letters instead of words""",
         default=False
     )
+    parser.add_argument(
+        "--merge",
+        action="store_true",
+        help="""if present, will merge the count files in the same result""",
+        default=False
+    )
     return parser
