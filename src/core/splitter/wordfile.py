@@ -60,7 +60,7 @@ class WordFileSplitter(FileSplitter):
         Returns:
             object: file-like object
         """
-        return open(self._filename, "rt")
+        return open(self._filename, "rt", encoding="UTF-8", errors="ignore")
 
     def _readFile(self, file_obj):
         """
