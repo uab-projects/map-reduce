@@ -4,5 +4,6 @@ in a text
 """
 # Libraries
 from .controller import controller
+from .parser import create_full_parser
 
-__all__ = ["controller"]
+__all__ = ["controller", "create_full_parser"]

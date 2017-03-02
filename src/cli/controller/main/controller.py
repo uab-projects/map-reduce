@@ -45,9 +45,15 @@ def controller():
     if task == "text-counter":
         LOGGER.info("Text-Counter implementation selected")
         controller = text_counter.controller
+        parser = text_counter.create_full_parser()
     else:
         LOGGER.error("No valid task has been selected, check usage")
         sys.exit(1)
+
+    # Check for help
+    if args.help:
+        parser.print_help()
+        sys.exit(0)
 
     # Welcome
     LOGGER.info("Welcome to map-reduce testing")

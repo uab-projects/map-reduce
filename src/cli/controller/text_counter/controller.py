@@ -11,29 +11,27 @@ from .parser import create_parser, create_parser_options
 from core.implements.text_counter import create_pools
 from core.splitter import WordFileSplitter, LetterFileSplitter
 
-# Constants
-LOGGER = None
-"""
-    logging.Logger: module logger
-"""
 
-
-def show_result(result, filename=None):
+def show_result(result, no_out=False, filename=None):
     """
     Given the result of the map-reduce task, prints it as the teacher of the
     subject desires
 
     Args:
         result (dict): dictionary containing last reduce result
+        no_out (bool): show just the amount
         filename (str): the file the result is from. If none, no file is
         printed
     """
-    # Print file
-    if filename is not None:
-        print("%s:" % (filename))
-    # Print counts
-    for key, value in sorted(result.items()):
-        print("      %d %s" % (value, key))
+    if no_out:
+        print("A total of %d items reduced", len(result.keys()))
+    else:
+        # Print file
+        if filename is not None:
+            print("%s:" % (filename))
+        # Print counts
+        for key, value in sorted(result.items()):
+            print("      %d %s" % (value, key))
 
 
 def controller(args):
@@ -51,23 +49,30 @@ def controller(args):
 
     # Get input files
     files = args.input_files
+    pools = []
 
+    # Create unique pool for merged files option
     if args.merge:
         # Create pools
         LOGGER.info("Creating map-reduce merged process pools")
-        pool = create_pools(lambda result: show_result(result, filename))
+        pools.append(create_pools(lambda r: show_result(r, args.no_out)))
 
-    # Check if they exist
+    # Loop files
     for filename in files:
         # Check file
         if not os.path.isfile(filename):
             LOGGER.critical("File %s doesn't exist", filename)
             sys.exit(1)
 
+        # Create pool per file if not merged
         if not args.merge:
             # Create pools
             LOGGER.info("Creating map-reduce process pools")
-            pool = create_pools(lambda result: show_result(result, filename))
+            pools.append(create_pools(lambda r: show_result(r, args.no_out,
+                         filename)))
+
+        # Pick pool
+        pool = pools[-1]
 
         # Create splitter
         LOGGER.info("Creating splitter")
@@ -75,20 +80,27 @@ def controller(args):
         if args.letters:
             LOGGER.info("Chosen letter file splitter")
             splitter_cls = LetterFileSplitter
-        splitter = splitter_cls(files[0], pool)
+        splitter = splitter_cls(filename, pool)
+
+        # Customize splitter
+        splitter.read_size = args.read_size
+        splitter.split_size = args.split_size
 
         # Read and execute
         LOGGER.info("Starting map-reduce tasks")
         splitter.read()
 
+        # Close data source for file if not merged
         if not args.merge:
             splitter.pool.close()
-            # Wait until finish
-            pool.join()
-            LOGGER.info("Finished map-reduce tasks")
 
+    # Close general pool if merged
     if args.merge:
-        # Wait until finish
         splitter.pool.close()
+
+    # Join all pools
+    for pool in pools:
         pool.join()
-        LOGGER.info("Finished map-reduce merged tasks")
+
+    # Finished
+    LOGGER.info("Finished map-reduce tasks")
