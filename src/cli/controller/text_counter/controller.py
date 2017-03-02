@@ -6,7 +6,8 @@ counter module
 import logging
 import sys
 import os
-from .parser import PARSER
+from ..main import parser as main_parser
+from .parser import create_parser, create_parser_options
 from core.implements.text_counter import create_pools
 from core.splitter.wordfile import WordFileSplitter
 
@@ -43,7 +44,10 @@ def controller(args):
     LOGGER = logging.getLogger("text_counter")
 
     # Get arguments
-    args = PARSER.parse_args()
+    parser = create_parser()
+    main_parser.create_parser_options(parser)
+    create_parser_options(parser)
+    args = parser.parse_args()
 
     # Get input files
     files = args.input_files
