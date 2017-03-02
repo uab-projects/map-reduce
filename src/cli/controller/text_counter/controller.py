@@ -9,7 +9,7 @@ import os
 from ..main import parser as main_parser
 from .parser import create_parser, create_parser_options
 from core.implements.text_counter import create_pools
-from core.splitter.wordfile import WordFileSplitter
+from core.splitter import WordFileSplitter, LetterFileSplitter
 
 # Constants
 LOGGER = None
@@ -65,7 +65,11 @@ def controller(args):
 
         # Create splitter
         LOGGER.info("Creating splitter")
-        splitter = WordFileSplitter(files[0], pool)
+        splitter_cls = WordFileSplitter
+        if args.letters:
+            LOGGER.info("Chosen letter file splitter")
+            splitter_cls = LetterFileSplitter
+        splitter = splitter_cls(files[0], pool)
 
         # Read and execute
         LOGGER.info("Starting map-reduce tasks")
