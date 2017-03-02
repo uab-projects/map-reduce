@@ -47,13 +47,15 @@ def reduce_task(*items):
     return merged
 
 
-def create_pools(finalize):
+def create_pools(finalize, reduce_size=-1):
     """
     Creates and concatenates the map and reduce pools,
 
     Args:
-        show_result (function): last function called when reduce stage is
+        finalize (function): last function called when reduce stage is
         completed
+        reduce_size (int): reduce size to pass to reduce pools. if not
+        specified, default is used
 
     Returns:
         multiprocessing.Pool: map stage pool with the link between reduce pool
@@ -61,11 +63,15 @@ def create_pools(finalize):
     """
     # Create the reduce pool
     LOGGER.debug("Creating reduce pool")
-    RP = RedPool(reduce_task)
-    # Assign last task
-    RP.on_done = finalize
+    reduce_pool = RedPool(reduce_task)
+
+    # Set attributes
+    reduce_pool.on_done = finalize
+    if reduce_size > 1:
+        reduce_pool.group_size = reduce_size
+
     # Create the map pool
     LOGGER.debug("Creating map pool")
-    MP = MapPool(map_task, RP)
+    map_pool = MapPool(map_task, reduce_pool)
 
-    return MP
+    return map_pool

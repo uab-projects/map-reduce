@@ -5,6 +5,11 @@ paradigm
 from abc import abstractmethod
 from ..listener.done import DoneListener
 
+# Constants
+SPLIT_SIZE_DEFAULT = 1
+"""
+    int: default split size, see AbstractSplitter for more
+"""
 
 class AbstractSplitter(DoneListener):
     """
@@ -12,8 +17,10 @@ class AbstractSplitter(DoneListener):
 
     Attributes:
         _pool (AbstractPool): the pool where to send the splitted pieces
+        _split_size (int): minimum split size to send. until split is not the
+        minimum size specified here, it will be buffered
     """
-    __slots__ = ["_pool"]
+    __slots__ = ["_pool", "_split_size"]
 
     def __init__(self, pool):
         """
@@ -24,6 +31,7 @@ class AbstractSplitter(DoneListener):
             pool (AbstractPool): pool where to send splits
         """
         self._pool = pool
+        self._split_size = SPLIT_SIZE_DEFAULT
 
     @abstractmethod
     def read(self):
@@ -47,3 +55,13 @@ class AbstractSplitter(DoneListener):
     def pool(self):
         """ Returns the pool where the splits are sent """
         return self._pool
+
+    @property
+    def split_size(self):
+        """ Returns the split size """
+        return self._split_size
+
+    @split_size.setter
+    def split_size(self, split_size):
+        """ Sets the split size """
+        self._split_size = split_size

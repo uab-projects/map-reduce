@@ -4,6 +4,11 @@ selected
 """
 # Libraries
 import argparse
+from .constant import SPLIT_SIZE_MIN, SPLIT_SIZE_DEFAULT,\
+                      READ_SIZE_MIN, READ_SIZE_DEFAULT,\
+                      REDUCE_SIZE_MIN, REDUCE_SIZE_DEFAULT
+
+from .validator import positive_integer, positive_integer_or_zero
 
 
 # Parser generators
@@ -64,4 +69,56 @@ def create_parser_options(parser):
         help="""if present, will count letters instead of words""",
         default=False
     )
+
+    # Hide output
+    parser.add_argument(
+        "--no-out",
+        action="store_true",
+        help="""disables the output, used for timing""",
+        default=False
+    )
+
+    # Sizes
+    parser.add_argument(
+        "--read-size",
+        action="store",
+        help="""number of characters to read each time from the file. If the
+        read size is 0, then file is read by lines. After each line or number
+        of characters is read, a split is tried to generate and sent if is
+        greater than split size or buffered if is less. Minimum is %d.
+        Default is %d""" % (READ_SIZE_MIN, READ_SIZE_DEFAULT),
+        type=positive_integer_or_zero,
+        default=READ_SIZE_DEFAULT
+    )
+    parser.add_argument(
+        "--split-size",
+        action="store",
+        help="""number of words (or letters if --letters is present) to save
+        on a buffer while reading a file to don't send to map any split that
+        contains less than the specified number of letters or words.
+        Minimum to set: %d (accept any split size, do not buffer).
+        Default is %d""" % (SPLIT_SIZE_MIN, SPLIT_SIZE_DEFAULT),
+        type=positive_integer,
+        default=SPLIT_SIZE_DEFAULT
+    )
+    parser.add_argument(
+        "--reduce-size",
+        action="store",
+        help="""number of items to accumulate before performing a reduce task.
+        This way until not enough items are present, a reduce task won't be
+        launched. Minimum is %d. We can't reduce a single item. It's non-sense
+        Default is %d""" % (REDUCE_SIZE_MIN, REDUCE_SIZE_DEFAULT),
+        type=positive_integer,
+        default=REDUCE_SIZE_DEFAULT
+    )
     return parser
+
+
+def create_full_parser():
+    """
+    Returns the full parser
+
+    Returns:
+        ArgumentParser: controller official parser filled with options
+    """
+    return create_parser_options(create_parser())
