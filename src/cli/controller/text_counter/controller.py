@@ -9,7 +9,7 @@ import os
 from ..main import parser as main_parser
 from .parser import create_parser, create_parser_options
 from core.implements.text_counter import create_pools
-from core.splitter.wordfile import WordFileSplitter
+from core.splitter import WordFileSplitter, LetterFileSplitter
 
 # Constants
 LOGGER = None
@@ -52,6 +52,11 @@ def controller(args):
     # Get input files
     files = args.input_files
 
+    if args.merge:
+        # Create pools
+        LOGGER.info("Creating map-reduce merged process pools")
+        pool = create_pools(lambda result: show_result(result, filename))
+
     # Check if they exist
     for filename in files:
         # Check file
@@ -59,18 +64,31 @@ def controller(args):
             LOGGER.critical("File %s doesn't exist", filename)
             sys.exit(1)
 
-        # Create pools
-        LOGGER.info("Creating map-reduce process pools")
-        pool = create_pools(lambda result: show_result(result, filename))
+        if not args.merge:
+            # Create pools
+            LOGGER.info("Creating map-reduce process pools")
+            pool = create_pools(lambda result: show_result(result, filename))
 
         # Create splitter
         LOGGER.info("Creating splitter")
-        splitter = WordFileSplitter(files[0], pool)
+        splitter_cls = WordFileSplitter
+        if args.letters:
+            LOGGER.info("Chosen letter file splitter")
+            splitter_cls = LetterFileSplitter
+        splitter = splitter_cls(files[0], pool)
 
         # Read and execute
         LOGGER.info("Starting map-reduce tasks")
         splitter.read()
 
+        if not args.merge:
+            splitter.pool.close()
+            # Wait until finish
+            pool.join()
+            LOGGER.info("Finished map-reduce tasks")
+
+    if args.merge:
         # Wait until finish
+        splitter.pool.close()
         pool.join()
-        LOGGER.info("Finished map-reduce tasks")
+        LOGGER.info("Finished map-reduce merged tasks")
