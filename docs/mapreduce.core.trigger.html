@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mapreduce.core.trigger package &#8212; Map Reduce v documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Map Reduce v documentation" href="index.html" />
+    <link rel="up" title="mapreduce.core package" href="mapreduce.core.html" />
+    <link rel="next" title="mapreduce.test package" href="mapreduce.test.html" />
+    <link rel="prev" title="mapreduce.core.splitter package" href="mapreduce.core.splitter.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mapreduce-core-trigger-package">
+<h1>mapreduce.core.trigger package<a class="headerlink" href="#mapreduce-core-trigger-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-mapreduce.core.trigger.close">
+<span id="mapreduce-core-trigger-close-module"></span><h2>mapreduce.core.trigger.close module<a class="headerlink" href="#module-mapreduce.core.trigger.close" title="Permalink to this headline">¶</a></h2>
+<p>Defines a class that can be triggered a close event. The close event means,
+when triggered, that a class that dynamically accepts data will receive no more
+data after the event has been triggered manually.</p>
+<p>It&#8217;s name and meaning comes from the multiprocessing library, concretely from
+the close method of the Pool class.</p>
+<dl class="class">
+<dt id="mapreduce.core.trigger.close.CloseTrigger">
+<em class="property">class </em><code class="descclassname">mapreduce.core.trigger.close.</code><code class="descname">CloseTrigger</code><a class="reference internal" href="_modules/mapreduce/core/trigger/close.html#CloseTrigger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.trigger.close.CloseTrigger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Defines a class that is able to process a triggered close event, meaning
+that after the trigger no more data will be accepted.</p>
+<p>Also contains a boolean attribute to know if the trigger has been triggered</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>_closed (bool): true if the close event has been triggered</dd>
+</dl>
+<dl class="method">
+<dt id="mapreduce.core.trigger.close.CloseTrigger.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/trigger/close.html#CloseTrigger.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.trigger.close.CloseTrigger.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>When executed, we&#8217;re telling the class that there will be no more
+incoming data. Here, default behaviour is set, that has to be done
+always and is to set the _closed status to True as the event has been
+triggered (you can alter this if you want)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mapreduce.core.trigger.close.CloseTrigger.closed">
+<code class="descname">closed</code><a class="headerlink" href="#mapreduce.core.trigger.close.CloseTrigger.closed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the status of the close event</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.core.trigger">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-mapreduce.core.trigger" title="Permalink to this headline">¶</a></h2>
+<p>This modules allow to specify that a class will be able to handle a series
+of triggers, that can be externally executed.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">mapreduce.core.trigger package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.trigger.close">mapreduce.core.trigger.close module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.trigger">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="mapreduce.html">mapreduce package</a><ul>
+  <li><a href="mapreduce.core.html">mapreduce.core package</a><ul>
+      <li>Previous: <a href="mapreduce.core.splitter.html" title="previous chapter">mapreduce.core.splitter package</a></li>
+      <li>Next: <a href="mapreduce.test.html" title="next chapter">mapreduce.test package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/mapreduce.core.trigger.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, davidlj95, ccebrecos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/mapreduce.core.trigger.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

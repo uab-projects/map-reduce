@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mapreduce.cli.controller.text_counter package &#8212; Map Reduce v documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Map Reduce v documentation" href="index.html" />
+    <link rel="up" title="mapreduce.cli.controller package" href="mapreduce.cli.controller.html" />
+    <link rel="next" title="mapreduce.core package" href="mapreduce.core.html" />
+    <link rel="prev" title="mapreduce.cli.controller.main package" href="mapreduce.cli.controller.main.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mapreduce-cli-controller-text-counter-package">
+<h1>mapreduce.cli.controller.text_counter package<a class="headerlink" href="#mapreduce-cli-controller-text-counter-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-mapreduce.cli.controller.text_counter.constant">
+<span id="mapreduce-cli-controller-text-counter-constant-module"></span><h2>mapreduce.cli.controller.text_counter.constant module<a class="headerlink" href="#module-mapreduce.cli.controller.text_counter.constant" title="Permalink to this headline">¶</a></h2>
+<p>Text-counter CLI interface constants</p>
+<dl class="data">
+<dt id="mapreduce.cli.controller.text_counter.constant.READ_SIZE_DEFAULT">
+<code class="descclassname">mapreduce.cli.controller.text_counter.constant.</code><code class="descname">READ_SIZE_DEFAULT</code><em class="property"> = 0</em><a class="headerlink" href="#mapreduce.cli.controller.text_counter.constant.READ_SIZE_DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: default read size if not specified by cli</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="mapreduce.cli.controller.text_counter.constant.READ_SIZE_MIN">
+<code class="descclassname">mapreduce.cli.controller.text_counter.constant.</code><code class="descname">READ_SIZE_MIN</code><em class="property"> = 0</em><a class="headerlink" href="#mapreduce.cli.controller.text_counter.constant.READ_SIZE_MIN" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: minimum read size (in characters number)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="mapreduce.cli.controller.text_counter.constant.REDUCE_SIZE_DEFAULT">
+<code class="descclassname">mapreduce.cli.controller.text_counter.constant.</code><code class="descname">REDUCE_SIZE_DEFAULT</code><em class="property"> = 2</em><a class="headerlink" href="#mapreduce.cli.controller.text_counter.constant.REDUCE_SIZE_DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: default reduce size if not specified by cli</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="mapreduce.cli.controller.text_counter.constant.REDUCE_SIZE_MIN">
+<code class="descclassname">mapreduce.cli.controller.text_counter.constant.</code><code class="descname">REDUCE_SIZE_MIN</code><em class="property"> = 2</em><a class="headerlink" href="#mapreduce.cli.controller.text_counter.constant.REDUCE_SIZE_MIN" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: minimum reduce size (in items to be reduced)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="mapreduce.cli.controller.text_counter.constant.SPLIT_SIZE_DEFAULT">
+<code class="descclassname">mapreduce.cli.controller.text_counter.constant.</code><code class="descname">SPLIT_SIZE_DEFAULT</code><em class="property"> = 1</em><a class="headerlink" href="#mapreduce.cli.controller.text_counter.constant.SPLIT_SIZE_DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: default split size if not specified by cli</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="mapreduce.cli.controller.text_counter.constant.SPLIT_SIZE_MIN">
+<code class="descclassname">mapreduce.cli.controller.text_counter.constant.</code><code class="descname">SPLIT_SIZE_MIN</code><em class="property"> = 1</em><a class="headerlink" href="#mapreduce.cli.controller.text_counter.constant.SPLIT_SIZE_MIN" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: minimum split size (in letters or words)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.cli.controller.text_counter.controller">
+<span id="mapreduce-cli-controller-text-counter-controller-module"></span><h2>mapreduce.cli.controller.text_counter.controller module<a class="headerlink" href="#module-mapreduce.cli.controller.text_counter.controller" title="Permalink to this headline">¶</a></h2>
+<p>Defines the controller to guide the software workflow when choosing the text
+counter module</p>
+<dl class="function">
+<dt id="mapreduce.cli.controller.text_counter.controller.controller">
+<code class="descclassname">mapreduce.cli.controller.text_counter.controller.</code><code class="descname">controller</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/text_counter/controller.html#controller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.text_counter.controller.controller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the controller for the text counter</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mapreduce.cli.controller.text_counter.controller.show_result">
+<code class="descclassname">mapreduce.cli.controller.text_counter.controller.</code><code class="descname">show_result</code><span class="sig-paren">(</span><em>result</em>, <em>no_out=False</em>, <em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/text_counter/controller.html#show_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.text_counter.controller.show_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given the result of the map-reduce task, prints it as the teacher of the
+subject desires</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>result (dict): dictionary containing last reduce result
+no_out (bool): show just the amount
+filename (str): the file the result is from. If none, no file is
+printed</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.cli.controller.text_counter.parser">
+<span id="mapreduce-cli-controller-text-counter-parser-module"></span><h2>mapreduce.cli.controller.text_counter.parser module<a class="headerlink" href="#module-mapreduce.cli.controller.text_counter.parser" title="Permalink to this headline">¶</a></h2>
+<p>Defines the argument parser to use when the task of text counting has been
+selected</p>
+<dl class="function">
+<dt id="mapreduce.cli.controller.text_counter.parser.create_full_parser">
+<code class="descclassname">mapreduce.cli.controller.text_counter.parser.</code><code class="descname">create_full_parser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/text_counter/parser.html#create_full_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.text_counter.parser.create_full_parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the full parser</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>ArgumentParser: controller official parser filled with options</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="mapreduce.cli.controller.text_counter.parser.create_parser">
+<code class="descclassname">mapreduce.cli.controller.text_counter.parser.</code><code class="descname">create_parser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/text_counter/parser.html#create_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.text_counter.parser.create_parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an argument parser for the controller and returns it</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>ArgumentParser: controller argument parser</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="mapreduce.cli.controller.text_counter.parser.create_parser_options">
+<code class="descclassname">mapreduce.cli.controller.text_counter.parser.</code><code class="descname">create_parser_options</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/text_counter/parser.html#create_parser_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.text_counter.parser.create_parser_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a parser, adds required arguments to it by the controller and returns
+the parser</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>ArgumentParser: argument parser to fill</dd>
+<dt>Returns:</dt>
+<dd>ArgumentParser: filled argument parser</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.cli.controller.text_counter.validator">
+<span id="mapreduce-cli-controller-text-counter-validator-module"></span><h2>mapreduce.cli.controller.text_counter.validator module<a class="headerlink" href="#module-mapreduce.cli.controller.text_counter.validator" title="Permalink to this headline">¶</a></h2>
+<p>Defines validators for the CLI arguments of this controller</p>
+<dl class="function">
+<dt id="mapreduce.cli.controller.text_counter.validator.integer_greater_than_1">
+<code class="descclassname">mapreduce.cli.controller.text_counter.validator.</code><code class="descname">integer_greater_than_1</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/text_counter/validator.html#integer_greater_than_1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.text_counter.validator.integer_greater_than_1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks that the argument is a positive integer greater than 1 and if not,
+raises an exception. If it is, returns the argument as an integer</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>arg (str): string to check if can be converted to a positive integer</dd>
+<dt>Returns:</dt>
+<dd>int: converted string to integer</dd>
+<dt>Raises:</dt>
+<dd>ValueError: if string is not an integer or is less than 2</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="mapreduce.cli.controller.text_counter.validator.positive_integer">
+<code class="descclassname">mapreduce.cli.controller.text_counter.validator.</code><code class="descname">positive_integer</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/text_counter/validator.html#positive_integer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.text_counter.validator.positive_integer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks that the argument is a positive integer and if not, raises an
+exception. If it is, returns the argument as an integer</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>arg (str): string to check if can be converted to a positive integer</dd>
+<dt>Returns:</dt>
+<dd>int: converted string to integer</dd>
+<dt>Raises:</dt>
+<dd>ValueError: if string is not an integer or is less than 1</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="mapreduce.cli.controller.text_counter.validator.positive_integer_or_zero">
+<code class="descclassname">mapreduce.cli.controller.text_counter.validator.</code><code class="descname">positive_integer_or_zero</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/text_counter/validator.html#positive_integer_or_zero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.text_counter.validator.positive_integer_or_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks that the argument is a positive integer or 0 and if not, raises an
+exception. If it is, returns the argument as an integer</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>arg (str): string to check if can be converted to a positive integer</dd>
+<dt>Returns:</dt>
+<dd>int: converted string to integer</dd>
+<dt>Raises:</dt>
+<dd>ValueError: if string is not an integer or is less than 0</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.cli.controller.text_counter">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-mapreduce.cli.controller.text_counter" title="Permalink to this headline">¶</a></h2>
+<p>Defines the CLI controller for the task of using map-reduce to count items
+in a text</p>
+<dl class="function">
+<dt id="mapreduce.cli.controller.text_counter.controller">
+<code class="descclassname">mapreduce.cli.controller.text_counter.</code><code class="descname">controller</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/text_counter/controller.html#controller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.text_counter.controller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the controller for the text counter</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mapreduce.cli.controller.text_counter.create_full_parser">
+<code class="descclassname">mapreduce.cli.controller.text_counter.</code><code class="descname">create_full_parser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/text_counter/parser.html#create_full_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.text_counter.create_full_parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the full parser</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>ArgumentParser: controller official parser filled with options</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">mapreduce.cli.controller.text_counter package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-mapreduce.cli.controller.text_counter.constant">mapreduce.cli.controller.text_counter.constant module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.cli.controller.text_counter.controller">mapreduce.cli.controller.text_counter.controller module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.cli.controller.text_counter.parser">mapreduce.cli.controller.text_counter.parser module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.cli.controller.text_counter.validator">mapreduce.cli.controller.text_counter.validator module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.cli.controller.text_counter">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="mapreduce.html">mapreduce package</a><ul>
+  <li><a href="mapreduce.cli.html">mapreduce.cli package</a><ul>
+  <li><a href="mapreduce.cli.controller.html">mapreduce.cli.controller package</a><ul>
+      <li>Previous: <a href="mapreduce.cli.controller.main.html" title="previous chapter">mapreduce.cli.controller.main package</a></li>
+      <li>Next: <a href="mapreduce.core.html" title="next chapter">mapreduce.core package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/mapreduce.cli.controller.text_counter.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, davidlj95, ccebrecos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/mapreduce.cli.controller.text_counter.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mapreduce.core.pool.reduce &#8212; Map Reduce v documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'v',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Map Reduce v documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mapreduce.core.pool.reduce</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Defines a Pool used to apply reduce tasks in the map-reduce paradigm. This way,</span>
+<span class="sd">groups of items are stored until they can be reduced together and the process</span>
+<span class="sd">is stoped when no more data is incoming and all reduce operations have finished</span>
+
+<span class="sd">The reduce operation implies that the result of the task will be added again to</span>
+<span class="sd">the pool to be reduced until no more items can be reduced. This means that is</span>
+<span class="sd">a feedback pool.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.basic</span> <span class="k">import</span> <span class="n">BasicPool</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+
+<span class="c1"># Constants</span>
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    logging.Logger: module logger</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">DEFAULT_MIN_GROUP_SIZE</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    int: minimum number of elements that have to be present to perform a</span>
+<span class="sd">    reduce operation</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="RedPool"><a class="viewcode-back" href="../../../../mapreduce.core.pool.html#mapreduce.core.pool.reduce.RedPool">[docs]</a><span class="k">class</span> <span class="nc">RedPool</span><span class="p">(</span><span class="n">BasicPool</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements a pool that is prepared to perform reduce tasks, that mean that</span>
+<span class="sd">    will take n items and return 1 as exchange that will have to be reduced</span>
+<span class="sd">    further with other incoming items.</span>
+
+<span class="sd">    When all items have been received and all items have been reduced, the</span>
+<span class="sd">    _on_done event is triggered, passing the result to the on_done property</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        _ready (list): list of items waiting for be reduced</span>
+<span class="sd">        _group_size (int): number of items to group to apply a reduce task</span>
+<span class="sd">        _user_on_done (function): method to call when the reduce operation</span>
+<span class="sd">                                  has finished</span>
+<span class="sd">                                  the result will be passed as argument</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;_ready&quot;</span><span class="p">,</span> <span class="s2">&quot;_group_size&quot;</span><span class="p">,</span> <span class="s2">&quot;_user_on_done&quot;</span><span class="p">,</span> <span class="s2">&quot;_results&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the reduce pool with an empty list of pending items and</span>
+<span class="sd">        noop for the _user_on_done function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ready</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_size</span> <span class="o">=</span> <span class="n">DEFAULT_MIN_GROUP_SIZE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_on_done</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="RedPool.add"><a class="viewcode-back" href="../../../../mapreduce.core.pool.html#mapreduce.core.pool.reduce.RedPool.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if there are enough items to send them to perform the reduce</span>
+<span class="sd">        task, and if not, sends the item to a buffer.</span>
+
+<span class="sd">        When no more items are incoming, the minimum size for reduce operation</span>
+<span class="sd">        is ignored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Adding new item to reduce: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+        <span class="c1"># Append to ready queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ready</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># Check if enough items to reduce</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ready</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_size</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Queuing reduce pool item: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sending </span><span class="si">%d</span><span class="s2"> items to reduce&quot;</span><span class="p">,</span>
+                         <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ready</span><span class="p">))</span>
+            <span class="c1"># Copy arguments list</span>
+            <span class="n">item_list</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ready</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ready</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># Add to pool</span>
+            <span class="c1"># Count scheduled task</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_scheduled</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># Launch task</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_task</span><span class="p">,</span>
+                <span class="n">item_list</span><span class="p">,</span>
+                <span class="p">{},</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_on_task_success</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_task_fail</span>
+            <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_on_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calls the user-defined function with the result of the reduce</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ready</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_user_on_done</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Prepare new pool</span>
+            <span class="n">pending</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ready</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span>
+            <span class="n">subpool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_task</span><span class="p">)</span>
+            <span class="n">subpool</span><span class="o">.</span><span class="n">group_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_size</span>
+            <span class="n">subpool</span><span class="o">.</span><span class="n">on_done</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_on_done</span>
+
+            <span class="c1"># Adjust group size</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pending</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">subpool</span><span class="o">.</span><span class="n">group_size</span><span class="p">:</span>
+                <span class="k">while</span> <span class="n">subpool</span><span class="o">.</span><span class="n">group_size</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">pending</span><span class="p">):</span>
+                    <span class="n">subpool</span><span class="o">.</span><span class="n">group_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">subpool</span><span class="o">.</span><span class="n">group_size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="c1"># Add items</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">pending</span><span class="p">:</span>
+                <span class="n">subpool</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+            <span class="c1"># Wait</span>
+            <span class="n">subpool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">subpool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_on_task_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Logs that a task has completed its execution and increments that</span>
+<span class="sd">        counter. After that, calls to the _on_task_complete, the default</span>
+<span class="sd">        behaviour</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result (object): result returned by the task</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Add work to subpool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_on_task_success</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">on_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the _user_on_done attribute &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_on_done</span>
+
+    <span class="nd">@on_done</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">on_done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_done</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the _user_on_done attribute &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_on_done</span> <span class="o">=</span> <span class="n">on_done</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">group_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the _group_size attribute &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_size</span>
+
+    <span class="nd">@group_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">group_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the _group_size attribute &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_size</span> <span class="o">=</span> <span class="n">group_size</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, davidlj95, ccebrecos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

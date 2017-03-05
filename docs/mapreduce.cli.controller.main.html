@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mapreduce.cli.controller.main package &#8212; Map Reduce v documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Map Reduce v documentation" href="index.html" />
+    <link rel="up" title="mapreduce.cli.controller package" href="mapreduce.cli.controller.html" />
+    <link rel="next" title="mapreduce.cli.controller.text_counter package" href="mapreduce.cli.controller.text_counter.html" />
+    <link rel="prev" title="mapreduce.cli.controller package" href="mapreduce.cli.controller.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mapreduce-cli-controller-main-package">
+<h1>mapreduce.cli.controller.main package<a class="headerlink" href="#mapreduce-cli-controller-main-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-mapreduce.cli.controller.main.constants">
+<span id="mapreduce-cli-controller-main-constants-module"></span><h2>mapreduce.cli.controller.main.constants module<a class="headerlink" href="#module-mapreduce.cli.controller.main.constants" title="Permalink to this headline">¶</a></h2>
+<p>Default log level</p>
+<dl class="data">
+<dt id="mapreduce.cli.controller.main.constants.LOG_DEFAULT">
+<code class="descclassname">mapreduce.cli.controller.main.constants.</code><code class="descname">LOG_DEFAULT</code><em class="property"> = 'error'</em><a class="headerlink" href="#mapreduce.cli.controller.main.constants.LOG_DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the task to perform by the map - reduce paradigm</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.cli.controller.main.controller">
+<span id="mapreduce-cli-controller-main-controller-module"></span><h2>mapreduce.cli.controller.main.controller module<a class="headerlink" href="#module-mapreduce.cli.controller.main.controller" title="Permalink to this headline">¶</a></h2>
+<p>Defines the main controller of the CLI</p>
+<dl class="function">
+<dt id="mapreduce.cli.controller.main.controller.controller">
+<code class="descclassname">mapreduce.cli.controller.main.controller.</code><code class="descname">controller</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/main/controller.html#controller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.main.controller.controller" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.cli.controller.main.parser">
+<span id="mapreduce-cli-controller-main-parser-module"></span><h2>mapreduce.cli.controller.main.parser module<a class="headerlink" href="#module-mapreduce.cli.controller.main.parser" title="Permalink to this headline">¶</a></h2>
+<p>Defines argument parsers for the CLI interfaces, using the Python argparse
+library</p>
+<dl class="function">
+<dt id="mapreduce.cli.controller.main.parser.create_parser">
+<code class="descclassname">mapreduce.cli.controller.main.parser.</code><code class="descname">create_parser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/main/parser.html#create_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.main.parser.create_parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an argument parser for the controller and returns it</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>ArgumentParser: controller argument parser</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="mapreduce.cli.controller.main.parser.create_parser_options">
+<code class="descclassname">mapreduce.cli.controller.main.parser.</code><code class="descname">create_parser_options</code><span class="sig-paren">(</span><em>parser</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/main/parser.html#create_parser_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.main.parser.create_parser_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a parser, adds required arguments to it by the controller and returns
+the parser</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>ArgumentParser: argument parser to fill</dd>
+<dt>Returns:</dt>
+<dd>ArgumentParser: filled argument parser</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="mapreduce.cli.controller.main.parser.evalTF">
+<code class="descclassname">mapreduce.cli.controller.main.parser.</code><code class="descname">evalTF</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/main/parser.html#evalTF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.main.parser.evalTF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a string to uppercase + lowercase letters to be able to determine
+if the string means true or false, so any case independent string
+containing true or false will be converted to their bool values</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>string (str): string to see if means true or false</dd>
+<dt>Returns:</dt>
+<dd>bool: true if string means true, false otherwise</dd>
+<dt>Raises:</dt>
+<dd>Exception: if string can&#8217;t be determined as true or false</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.cli.controller.main">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-mapreduce.cli.controller.main" title="Permalink to this headline">¶</a></h2>
+<p>Defines the main controller for the CLI interface</p>
+<dl class="function">
+<dt id="mapreduce.cli.controller.main.controller">
+<code class="descclassname">mapreduce.cli.controller.main.</code><code class="descname">controller</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/cli/controller/main/controller.html#controller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.cli.controller.main.controller" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">mapreduce.cli.controller.main package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-mapreduce.cli.controller.main.constants">mapreduce.cli.controller.main.constants module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.cli.controller.main.controller">mapreduce.cli.controller.main.controller module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.cli.controller.main.parser">mapreduce.cli.controller.main.parser module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.cli.controller.main">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="mapreduce.html">mapreduce package</a><ul>
+  <li><a href="mapreduce.cli.html">mapreduce.cli package</a><ul>
+  <li><a href="mapreduce.cli.controller.html">mapreduce.cli.controller package</a><ul>
+      <li>Previous: <a href="mapreduce.cli.controller.html" title="previous chapter">mapreduce.cli.controller package</a></li>
+      <li>Next: <a href="mapreduce.cli.controller.text_counter.html" title="next chapter">mapreduce.cli.controller.text_counter package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/mapreduce.cli.controller.main.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, davidlj95, ccebrecos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/mapreduce.cli.controller.main.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

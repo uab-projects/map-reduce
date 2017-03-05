@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mapreduce.test package &#8212; Map Reduce v documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Map Reduce v documentation" href="index.html" />
+    <link rel="up" title="mapreduce package" href="mapreduce.html" />
+    <link rel="prev" title="mapreduce.core.trigger package" href="mapreduce.core.trigger.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mapreduce-test-package">
+<h1>mapreduce.test package<a class="headerlink" href="#mapreduce-test-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-mapreduce.test.map">
+<span id="mapreduce-test-map-module"></span><h2>mapreduce.test.map module<a class="headerlink" href="#module-mapreduce.test.map" title="Permalink to this headline">¶</a></h2>
+<p>Test for the map pool module.</p>
+<dl class="data">
+<dt id="mapreduce.test.map.LOGGER">
+<code class="descclassname">mapreduce.test.map.</code><code class="descname">LOGGER</code><em class="property"> = &lt;logging.Logger object&gt;</em><a class="headerlink" href="#mapreduce.test.map.LOGGER" title="Permalink to this definition">¶</a></dt>
+<dd><p>logging.Logger: module logger</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mapreduce.test.map.simple_test">
+<code class="descclassname">mapreduce.test.map.</code><code class="descname">simple_test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/test/map.html#simple_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.test.map.simple_test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.test.reduce">
+<span id="mapreduce-test-reduce-module"></span><h2>mapreduce.test.reduce module<a class="headerlink" href="#module-mapreduce.test.reduce" title="Permalink to this headline">¶</a></h2>
+<p>Test for the reduce pool module.</p>
+<dl class="data">
+<dt id="mapreduce.test.reduce.LOGGER">
+<code class="descclassname">mapreduce.test.reduce.</code><code class="descname">LOGGER</code><em class="property"> = &lt;logging.Logger object&gt;</em><a class="headerlink" href="#mapreduce.test.reduce.LOGGER" title="Permalink to this definition">¶</a></dt>
+<dd><p>logging.Logger: module logger</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="mapreduce.test.reduce.join_dicts">
+<code class="descclassname">mapreduce.test.reduce.</code><code class="descname">join_dicts</code><span class="sig-paren">(</span><em>*items</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/test/reduce.html#join_dicts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.test.reduce.join_dicts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converges the keys for the n items received, performing the sum operation
+with all the values of the same key and returning a joined dictionary</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><a href="#id1"><span class="problematic" id="id2">*</span></a>args (dict): dictionaries to join summing their values with equal keys</dd>
+<dt>Returns:</dt>
+<dd>dict: merged dictionary</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="mapreduce.test.reduce.simple_test">
+<code class="descclassname">mapreduce.test.reduce.</code><code class="descname">simple_test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/test/reduce.html#simple_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.test.reduce.simple_test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.test">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-mapreduce.test" title="Permalink to this headline">¶</a></h2>
+<p>Little scripts that helps testing main functionalities of the application and
+the application by its components</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">mapreduce.test package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-mapreduce.test.map">mapreduce.test.map module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.test.reduce">mapreduce.test.reduce module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.test">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="mapreduce.html">mapreduce package</a><ul>
+      <li>Previous: <a href="mapreduce.core.trigger.html" title="previous chapter">mapreduce.core.trigger package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/mapreduce.test.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, davidlj95, ccebrecos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/mapreduce.test.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

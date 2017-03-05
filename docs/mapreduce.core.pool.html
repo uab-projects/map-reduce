@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mapreduce.core.pool package &#8212; Map Reduce v documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Map Reduce v documentation" href="index.html" />
+    <link rel="up" title="mapreduce.core package" href="mapreduce.core.html" />
+    <link rel="next" title="mapreduce.core.splitter package" href="mapreduce.core.splitter.html" />
+    <link rel="prev" title="mapreduce.core.log package" href="mapreduce.core.log.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mapreduce-core-pool-package">
+<h1>mapreduce.core.pool package<a class="headerlink" href="#mapreduce-core-pool-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-mapreduce.core.pool.basic">
+<span id="mapreduce-core-pool-basic-module"></span><h2>mapreduce.core.pool.basic module<a class="headerlink" href="#module-mapreduce.core.pool.basic" title="Permalink to this headline">¶</a></h2>
+<p>Defines an abstract pool, this means, a generic pool that will start executing
+the defined task when new data-items arrive, so will apply those data-items
+to the task function.</p>
+<p>Those tasks will be executed in parallel, with as much threads as the CPU is
+able to handle. Therefore, the need for events of the Pool is obvious to know
+when no more tasks will come and when all tasks have been completed.</p>
+<p>Eventually, when the pool receives the close trigger, telling that no more data
+will be incoming, the pool is closed and then the done method will be called</p>
+<p>This is the most basic pool implementation that makes creating parallel tasks
+easy</p>
+<dl class="class">
+<dt id="mapreduce.core.pool.basic.BasicPool">
+<em class="property">class </em><code class="descclassname">mapreduce.core.pool.basic.</code><code class="descname">BasicPool</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/pool/basic.html#BasicPool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.pool.basic.BasicPool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mapreduce.core.trigger.html#mapreduce.core.trigger.close.CloseTrigger" title="mapreduce.core.trigger.close.CloseTrigger"><code class="xref py py-class docutils literal"><span class="pre">mapreduce.core.trigger.close.CloseTrigger</span></code></a>, <a class="reference internal" href="mapreduce.core.listener.html#mapreduce.core.listener.done.DoneListener" title="mapreduce.core.listener.done.DoneListener"><code class="xref py py-class docutils literal"><span class="pre">mapreduce.core.listener.done.DoneListener</span></code></a>, <a class="reference internal" href="mapreduce.core.listener.html#mapreduce.core.listener.async_task.AsyncTask" title="mapreduce.core.listener.async_task.AsyncTask"><code class="xref py py-class docutils literal"><span class="pre">mapreduce.core.listener.async_task.AsyncTask</span></code></a></p>
+<p>The basic pools is a pool that can accept tasks to perform, defined in the
+_task attribute and run them when new data-items arrive through the add
+method.</p>
+<p>Once no more data to be run is coming, the close method has to be manually
+triggered. Finally, the done event will be triggered when all tasks have
+been completed.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>_pool (multiprocessing.Pool): pool of tasks to use
+_task (function): function to execute when adding new items to process
+_scheduled (int): number of tasks that have been scheduled, including
+the ones that have already been completed
+_succeeded (int): number of tasks that have completed successfully
+_failed (int): number of tasks that have completed but failed</dd>
+</dl>
+<dl class="method">
+<dt id="mapreduce.core.pool.basic.BasicPool.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/pool/basic.html#BasicPool.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.pool.basic.BasicPool.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a new item to be processed by the pool</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><a href="#id1"><span class="problematic" id="id2">*</span></a>args: arguments to pass to the task to be executed</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="mapreduce.core.pool.basic.BasicPool.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/pool/basic.html#BasicPool.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.pool.basic.BasicPool.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the pool so no more external inputs will be able to be sent</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mapreduce.core.pool.basic.BasicPool.completed">
+<code class="descname">completed</code><a class="headerlink" href="#mapreduce.core.pool.basic.BasicPool.completed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the total tasks executed successfully or not, performing the
+sum of self._succeeded + self._failed</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mapreduce.core.pool.basic.BasicPool.failed">
+<code class="descname">failed</code><a class="headerlink" href="#mapreduce.core.pool.basic.BasicPool.failed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the total tasks executed that have failed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mapreduce.core.pool.basic.BasicPool.join">
+<code class="descname">join</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/pool/basic.html#BasicPool.join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.pool.basic.BasicPool.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is one of the most important functions with the pool. This has to
+be called to prevent execution finishes before all tasks are executed.</p>
+<p>Call to the method so the execution will be stopped until all tasks
+are executed (and therefore _on_done event is triggered)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mapreduce.core.pool.basic.BasicPool.scheduled">
+<code class="descname">scheduled</code><a class="headerlink" href="#mapreduce.core.pool.basic.BasicPool.scheduled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the total tasks scheduled (completed tasks too)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mapreduce.core.pool.basic.BasicPool.succeeded">
+<code class="descname">succeeded</code><a class="headerlink" href="#mapreduce.core.pool.basic.BasicPool.succeeded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the total tasks executed successfully</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mapreduce.core.pool.basic.BasicPool.task">
+<code class="descname">task</code><a class="headerlink" href="#mapreduce.core.pool.basic.BasicPool.task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the task set to perform</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="mapreduce.core.pool.basic.LOGGER">
+<code class="descclassname">mapreduce.core.pool.basic.</code><code class="descname">LOGGER</code><em class="property"> = &lt;logging.Logger object&gt;</em><a class="headerlink" href="#mapreduce.core.pool.basic.LOGGER" title="Permalink to this definition">¶</a></dt>
+<dd><p>logging.Logger: module logger</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.core.pool.map">
+<span id="mapreduce-core-pool-map-module"></span><h2>mapreduce.core.pool.map module<a class="headerlink" href="#module-mapreduce.core.pool.map" title="Permalink to this headline">¶</a></h2>
+<p>Defines a Pool used to apply map tasks in the map-reduce paradigm. So that
+class is ready to do the proper task and transfer its result to the reduce
+stage. This way, once the task to do is already completed the result will be
+inmediately passed to the next Pool.</p>
+<dl class="data">
+<dt id="mapreduce.core.pool.map.LOGGER">
+<code class="descclassname">mapreduce.core.pool.map.</code><code class="descname">LOGGER</code><em class="property"> = &lt;logging.Logger object&gt;</em><a class="headerlink" href="#mapreduce.core.pool.map.LOGGER" title="Permalink to this definition">¶</a></dt>
+<dd><p>logging.Logger: module logger</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="mapreduce.core.pool.map.MapPool">
+<em class="property">class </em><code class="descclassname">mapreduce.core.pool.map.</code><code class="descname">MapPool</code><span class="sig-paren">(</span><em>task</em>, <em>nextStep</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/pool/map.html#MapPool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.pool.map.MapPool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mapreduce.core.pool.basic.BasicPool" title="mapreduce.core.pool.basic.BasicPool"><code class="xref py py-class docutils literal"><span class="pre">mapreduce.core.pool.basic.BasicPool</span></code></a></p>
+<p>Implements a pool ready to perform map kind tasks, meaning that will take
+only a piece of the big real work to process.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>_nextStep (multiprocessing.Pool): next step in the workflow to transfer
+the data once the proper work is already done</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.core.pool.reduce">
+<span id="mapreduce-core-pool-reduce-module"></span><h2>mapreduce.core.pool.reduce module<a class="headerlink" href="#module-mapreduce.core.pool.reduce" title="Permalink to this headline">¶</a></h2>
+<p>Defines a Pool used to apply reduce tasks in the map-reduce paradigm. This way,
+groups of items are stored until they can be reduced together and the process
+is stoped when no more data is incoming and all reduce operations have finished</p>
+<p>The reduce operation implies that the result of the task will be added again to
+the pool to be reduced until no more items can be reduced. This means that is
+a feedback pool.</p>
+<dl class="data">
+<dt id="mapreduce.core.pool.reduce.DEFAULT_MIN_GROUP_SIZE">
+<code class="descclassname">mapreduce.core.pool.reduce.</code><code class="descname">DEFAULT_MIN_GROUP_SIZE</code><em class="property"> = 2</em><a class="headerlink" href="#mapreduce.core.pool.reduce.DEFAULT_MIN_GROUP_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: minimum number of elements that have to be present to perform a
+reduce operation</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="mapreduce.core.pool.reduce.LOGGER">
+<code class="descclassname">mapreduce.core.pool.reduce.</code><code class="descname">LOGGER</code><em class="property"> = &lt;logging.Logger object&gt;</em><a class="headerlink" href="#mapreduce.core.pool.reduce.LOGGER" title="Permalink to this definition">¶</a></dt>
+<dd><p>logging.Logger: module logger</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="mapreduce.core.pool.reduce.RedPool">
+<em class="property">class </em><code class="descclassname">mapreduce.core.pool.reduce.</code><code class="descname">RedPool</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/pool/reduce.html#RedPool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.pool.reduce.RedPool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mapreduce.core.pool.basic.BasicPool" title="mapreduce.core.pool.basic.BasicPool"><code class="xref py py-class docutils literal"><span class="pre">mapreduce.core.pool.basic.BasicPool</span></code></a></p>
+<p>Implements a pool that is prepared to perform reduce tasks, that mean that
+will take n items and return 1 as exchange that will have to be reduced
+further with other incoming items.</p>
+<p>When all items have been received and all items have been reduced, the
+_on_done event is triggered, passing the result to the on_done property</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><p class="first">_ready (list): list of items waiting for be reduced
+_group_size (int): number of items to group to apply a reduce task
+_user_on_done (function): method to call when the reduce operation</p>
+<blockquote class="last">
+<div>has finished
+the result will be passed as argument</div></blockquote>
+</dd>
+</dl>
+<dl class="method">
+<dt id="mapreduce.core.pool.reduce.RedPool.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/pool/reduce.html#RedPool.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.pool.reduce.RedPool.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if there are enough items to send them to perform the reduce
+task, and if not, sends the item to a buffer.</p>
+<p>When no more items are incoming, the minimum size for reduce operation
+is ignored.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mapreduce.core.pool.reduce.RedPool.group_size">
+<code class="descname">group_size</code><a class="headerlink" href="#mapreduce.core.pool.reduce.RedPool.group_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the _group_size attribute</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mapreduce.core.pool.reduce.RedPool.on_done">
+<code class="descname">on_done</code><a class="headerlink" href="#mapreduce.core.pool.reduce.RedPool.on_done" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the _user_on_done attribute</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.core.pool">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-mapreduce.core.pool" title="Permalink to this headline">¶</a></h2>
+<p>This module defines the Pool model. We take the Pool meaning from the Python
+multiprocessing library. A pool will be a class that accepts customized tasks
+to be executed and executes them in parallel.</p>
+<p>This pools are automated in a way that when the pool is defined, a task to
+perform is defined, so to execute new tasks in parallel, just new data has to
+be added to the pool and it will know what to perform, allowing dynamic data
+entry with parallel multiprocessing.</p>
+<p>Therefore the Pool is event oriented and will take help from listeners module
+to know what kind of events the pool listens to.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">mapreduce.core.pool package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.pool.basic">mapreduce.core.pool.basic module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.pool.map">mapreduce.core.pool.map module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.pool.reduce">mapreduce.core.pool.reduce module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.pool">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="mapreduce.html">mapreduce package</a><ul>
+  <li><a href="mapreduce.core.html">mapreduce.core package</a><ul>
+      <li>Previous: <a href="mapreduce.core.log.html" title="previous chapter">mapreduce.core.log package</a></li>
+      <li>Next: <a href="mapreduce.core.splitter.html" title="next chapter">mapreduce.core.splitter package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/mapreduce.core.pool.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, davidlj95, ccebrecos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/mapreduce.core.pool.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mapreduce.core.pool.basic &#8212; Map Reduce v documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'v',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Map Reduce v documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mapreduce.core.pool.basic</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Defines an abstract pool, this means, a generic pool that will start executing</span>
+<span class="sd">the defined task when new data-items arrive, so will apply those data-items</span>
+<span class="sd">to the task function.</span>
+
+<span class="sd">Those tasks will be executed in parallel, with as much threads as the CPU is</span>
+<span class="sd">able to handle. Therefore, the need for events of the Pool is obvious to know</span>
+<span class="sd">when no more tasks will come and when all tasks have been completed.</span>
+
+<span class="sd">Eventually, when the pool receives the close trigger, telling that no more data</span>
+<span class="sd">will be incoming, the pool is closed and then the done method will be called</span>
+
+<span class="sd">This is the most basic pool implementation that makes creating parallel tasks</span>
+<span class="sd">easy</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Pool</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">..trigger.close</span> <span class="k">import</span> <span class="n">CloseTrigger</span>
+<span class="kn">from</span> <span class="nn">..listener.done</span> <span class="k">import</span> <span class="n">DoneListener</span>
+<span class="kn">from</span> <span class="nn">..listener.async_task</span> <span class="k">import</span> <span class="n">AsyncTask</span>
+
+
+<span class="c1"># Constants</span>
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    logging.Logger: module logger</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="BasicPool"><a class="viewcode-back" href="../../../../mapreduce.core.pool.html#mapreduce.core.pool.basic.BasicPool">[docs]</a><span class="k">class</span> <span class="nc">BasicPool</span><span class="p">(</span><span class="n">CloseTrigger</span><span class="p">,</span> <span class="n">DoneListener</span><span class="p">,</span> <span class="n">AsyncTask</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The basic pools is a pool that can accept tasks to perform, defined in the</span>
+<span class="sd">    _task attribute and run them when new data-items arrive through the add</span>
+<span class="sd">    method.</span>
+
+<span class="sd">    Once no more data to be run is coming, the close method has to be manually</span>
+<span class="sd">    triggered. Finally, the done event will be triggered when all tasks have</span>
+<span class="sd">    been completed.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        _pool (multiprocessing.Pool): pool of tasks to use</span>
+<span class="sd">        _task (function): function to execute when adding new items to process</span>
+<span class="sd">        _scheduled (int): number of tasks that have been scheduled, including</span>
+<span class="sd">        the ones that have already been completed</span>
+<span class="sd">        _succeeded (int): number of tasks that have completed successfully</span>
+<span class="sd">        _failed (int): number of tasks that have completed but failed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;_pool&quot;</span><span class="p">,</span> <span class="s2">&quot;_task&quot;</span><span class="p">,</span> <span class="s2">&quot;_scheduled&quot;</span><span class="p">,</span> <span class="s2">&quot;_succeeded&quot;</span><span class="p">,</span> <span class="s2">&quot;_failed&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the pool and the actual task pool with the task that the</span>
+<span class="sd">        pool will have to perform when new items come</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task (function): task the pool must perform in parallel</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_task</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scheduled</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_succeeded</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_failed</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="BasicPool.add"><a class="viewcode-back" href="../../../../mapreduce.core.pool.html#mapreduce.core.pool.basic.BasicPool.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a new item to be processed by the pool</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *args: arguments to pass to the task to be executed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Count scheduled task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scheduled</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># Launch task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_task</span><span class="p">,</span>
+            <span class="n">args</span><span class="p">,</span>
+            <span class="n">kwargs</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_task_success</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_task_fail</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasicPool.close"><a class="viewcode-back" href="../../../../mapreduce.core.pool.html#mapreduce.core.pool.basic.BasicPool.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes the pool so no more external inputs will be able to be sent</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BasicPool.join"><a class="viewcode-back" href="../../../../mapreduce.core.pool.html#mapreduce.core.pool.basic.BasicPool.join">[docs]</a>    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This is one of the most important functions with the pool. This has to</span>
+<span class="sd">        be called to prevent execution finishes before all tasks are executed.</span>
+
+<span class="sd">        Call to the method so the execution will be stopped until all tasks</span>
+<span class="sd">        are executed (and therefore _on_done event is triggered)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_check_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if all tasks scheduled have been completed and no more data is</span>
+<span class="sd">        going to arrive, so the done event can be triggered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduled</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_done</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_on_task_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to be executed when an asynchrounous task is starting to run.</span>
+<span class="sd">        As there&#39;s no possible way for this to happen due to library</span>
+<span class="sd">        limitations, this can&#39;t be implemented</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;Method not implemented due to library</span>
+<span class="s2">        limitations&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_task_fail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Logs that a task has failed and increments that counter. After that,</span>
+<span class="sd">        calls to the _on_task_complete, the default behaviour</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            exception (Exception): exception that caused the task to fail</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_failed</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Task failed to execute: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">exception</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_on_task_fail</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_on_task_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Logs that a task has completed its execution and increments that</span>
+<span class="sd">        counter. After that, calls to the _on_task_complete, the default</span>
+<span class="sd">        behaviour</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result (object): result returned by the task</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_succeeded</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Task done with result: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_on_task_success</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_on_task_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        After a task has completed, either with success or not, we have to</span>
+<span class="sd">        detect if we have finished all tasks to trigger the done event</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Task completed&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_stop</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the task set to perform &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_task</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">scheduled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the total tasks scheduled (completed tasks too) &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduled</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">succeeded</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the total tasks executed successfully &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_succeeded</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">failed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the total tasks executed that have failed &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_failed</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the total tasks executed successfully or not, performing the</span>
+<span class="sd">        sum of self._succeeded + self._failed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_succeeded</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_failed</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, davidlj95, ccebrecos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

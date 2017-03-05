@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mapreduce.core.splitter package &#8212; Map Reduce v documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Map Reduce v documentation" href="index.html" />
+    <link rel="up" title="mapreduce.core package" href="mapreduce.core.html" />
+    <link rel="next" title="mapreduce.core.trigger package" href="mapreduce.core.trigger.html" />
+    <link rel="prev" title="mapreduce.core.pool package" href="mapreduce.core.pool.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mapreduce-core-splitter-package">
+<h1>mapreduce.core.splitter package<a class="headerlink" href="#mapreduce-core-splitter-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-mapreduce.core.splitter.abstract">
+<span id="mapreduce-core-splitter-abstract-module"></span><h2>mapreduce.core.splitter.abstract module<a class="headerlink" href="#module-mapreduce.core.splitter.abstract" title="Permalink to this headline">¶</a></h2>
+<p>Generic structure to use when defining a splitter in a map-reduce programming
+paradigm</p>
+<dl class="class">
+<dt id="mapreduce.core.splitter.abstract.AbstractSplitter">
+<em class="property">class </em><code class="descclassname">mapreduce.core.splitter.abstract.</code><code class="descname">AbstractSplitter</code><span class="sig-paren">(</span><em>pool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/splitter/abstract.html#AbstractSplitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.splitter.abstract.AbstractSplitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="mapreduce.core.listener.html#mapreduce.core.listener.done.DoneListener" title="mapreduce.core.listener.done.DoneListener"><code class="xref py py-class docutils literal"><span class="pre">mapreduce.core.listener.done.DoneListener</span></code></a></p>
+<p>Interface for defining splitter classes</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>_pool (AbstractPool): the pool where to send the splitted pieces
+_split_size (int): minimum split size to send. until split is not the
+minimum size specified here, it will be buffered</dd>
+</dl>
+<dl class="attribute">
+<dt id="mapreduce.core.splitter.abstract.AbstractSplitter.pool">
+<code class="descname">pool</code><a class="headerlink" href="#mapreduce.core.splitter.abstract.AbstractSplitter.pool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the pool where the splits are sent</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mapreduce.core.splitter.abstract.AbstractSplitter.read">
+<code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/splitter/abstract.html#AbstractSplitter.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.splitter.abstract.AbstractSplitter.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads by splits from source and goes sending splits to the pool,
+checking first that the pool exists</p>
+<dl class="docutils">
+<dt>Raises:</dt>
+<dd>AssertException: if pool is None when reading</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mapreduce.core.splitter.abstract.AbstractSplitter.split_size">
+<code class="descname">split_size</code><a class="headerlink" href="#mapreduce.core.splitter.abstract.AbstractSplitter.split_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the split size</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="mapreduce.core.splitter.abstract.SPLIT_SIZE_DEFAULT">
+<code class="descclassname">mapreduce.core.splitter.abstract.</code><code class="descname">SPLIT_SIZE_DEFAULT</code><em class="property"> = 1</em><a class="headerlink" href="#mapreduce.core.splitter.abstract.SPLIT_SIZE_DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: default split size, see AbstractSplitter for more</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.core.splitter.file">
+<span id="mapreduce-core-splitter-file-module"></span><h2>mapreduce.core.splitter.file module<a class="headerlink" href="#module-mapreduce.core.splitter.file" title="Permalink to this headline">¶</a></h2>
+<p>A FileSplitter defines the basic structure of a splitter that reads pieces from
+a file and sends them to a map pool</p>
+<dl class="data">
+<dt id="mapreduce.core.splitter.file.DEFAULT_ENCODING">
+<code class="descclassname">mapreduce.core.splitter.file.</code><code class="descname">DEFAULT_ENCODING</code><em class="property"> = 'utf-8'</em><a class="headerlink" href="#mapreduce.core.splitter.file.DEFAULT_ENCODING" title="Permalink to this definition">¶</a></dt>
+<dd><p>str: default encoding to use in the splitter if no encoding is specified</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="mapreduce.core.splitter.file.DEFAULT_READ_SIZE">
+<code class="descclassname">mapreduce.core.splitter.file.</code><code class="descname">DEFAULT_READ_SIZE</code><em class="property"> = 0</em><a class="headerlink" href="#mapreduce.core.splitter.file.DEFAULT_READ_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: number of characters to read from the file each time by default</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="mapreduce.core.splitter.file.FileSplitter">
+<em class="property">class </em><code class="descclassname">mapreduce.core.splitter.file.</code><code class="descname">FileSplitter</code><span class="sig-paren">(</span><em>filename</em>, <em>pool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/splitter/file.html#FileSplitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.splitter.file.FileSplitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mapreduce.core.splitter.abstract.AbstractSplitter" title="mapreduce.core.splitter.abstract.AbstractSplitter"><code class="xref py py-class docutils literal"><span class="pre">mapreduce.core.splitter.abstract.AbstractSplitter</span></code></a></p>
+<p>A concrete file splitter that reads data and splits it from a file source</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>_filename (str): the file to be read and split
+_read_size (int): number of characters to read from the file each
+time to create a buffer. If 0 is specified, a whole line is read</dd>
+</dl>
+<dl class="method">
+<dt id="mapreduce.core.splitter.file.FileSplitter.read">
+<code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/splitter/file.html#FileSplitter.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.splitter.file.FileSplitter.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens the file, handles the control with the file-like object to the
+reader that will read it and split it</p>
+<dl class="docutils">
+<dt>Raises:</dt>
+<dd>FileNotFoundError: if no file is found</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mapreduce.core.splitter.file.FileSplitter.read_size">
+<code class="descname">read_size</code><a class="headerlink" href="#mapreduce.core.splitter.file.FileSplitter.read_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the read size</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.core.splitter.letterfile">
+<span id="mapreduce-core-splitter-letterfile-module"></span><h2>mapreduce.core.splitter.letterfile module<a class="headerlink" href="#module-mapreduce.core.splitter.letterfile" title="Permalink to this headline">¶</a></h2>
+<p>A LetterFileSplitter takes a text-file (encoded in UTF-8 if nothing specified)
+and reads the file  while generating letter splits</p>
+<dl class="class">
+<dt id="mapreduce.core.splitter.letterfile.LetterFileSplitter">
+<em class="property">class </em><code class="descclassname">mapreduce.core.splitter.letterfile.</code><code class="descname">LetterFileSplitter</code><span class="sig-paren">(</span><em>filename</em>, <em>pool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/splitter/letterfile.html#LetterFileSplitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.splitter.letterfile.LetterFileSplitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mapreduce.core.splitter.file.FileSplitter" title="mapreduce.core.splitter.file.FileSplitter"><code class="xref py py-class docutils literal"><span class="pre">mapreduce.core.splitter.file.FileSplitter</span></code></a></p>
+<p>Reads text from a text-file (encoded in UTF-8 by default) using the file
+reader and generate word splits</p>
+<p>If not enough words are found, they&#8217;re saved to be sent along with the next
+found words in the next line until no more words are found</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>_filename (str): the file to be read and split into words</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.core.splitter.wordfile">
+<span id="mapreduce-core-splitter-wordfile-module"></span><h2>mapreduce.core.splitter.wordfile module<a class="headerlink" href="#module-mapreduce.core.splitter.wordfile" title="Permalink to this headline">¶</a></h2>
+<p>A WordFileSplitter takes a text-file (encoded in UTF-8 if nothing specified)
+and reads the file while generating word splits</p>
+<dl class="class">
+<dt id="mapreduce.core.splitter.wordfile.WordFileSplitter">
+<em class="property">class </em><code class="descclassname">mapreduce.core.splitter.wordfile.</code><code class="descname">WordFileSplitter</code><span class="sig-paren">(</span><em>filename</em>, <em>pool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/splitter/wordfile.html#WordFileSplitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.splitter.wordfile.WordFileSplitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mapreduce.core.splitter.file.FileSplitter" title="mapreduce.core.splitter.file.FileSplitter"><code class="xref py py-class docutils literal"><span class="pre">mapreduce.core.splitter.file.FileSplitter</span></code></a></p>
+<p>Reads text from a text-file (encoded in UTF-8 by default) using the file
+reader and generate letter splits</p>
+<p>If not enough letters are found, they&#8217;re saved to be sent along with the
+next found letters in the next line until no more words are found</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>_filename (str): the file to be read and split into letters</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.core.splitter">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-mapreduce.core.splitter" title="Permalink to this headline">¶</a></h2>
+<p>This module contains classes to perform the first step on every map-reduce
+paradigm software: split the problem to deal with.</p>
+<p>We&#8217;ve implemented just splitters that read from disk text (utf-8) files and
+ables them to send it to a pool (a map pool in most cases)</p>
+<dl class="class">
+<dt id="mapreduce.core.splitter.WordFileSplitter">
+<em class="property">class </em><code class="descclassname">mapreduce.core.splitter.</code><code class="descname">WordFileSplitter</code><span class="sig-paren">(</span><em>filename</em>, <em>pool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/splitter/wordfile.html#WordFileSplitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.splitter.WordFileSplitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mapreduce.core.splitter.file.FileSplitter" title="mapreduce.core.splitter.file.FileSplitter"><code class="xref py py-class docutils literal"><span class="pre">mapreduce.core.splitter.file.FileSplitter</span></code></a></p>
+<p>Reads text from a text-file (encoded in UTF-8 by default) using the file
+reader and generate letter splits</p>
+<p>If not enough letters are found, they&#8217;re saved to be sent along with the
+next found letters in the next line until no more words are found</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>_filename (str): the file to be read and split into letters</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="mapreduce.core.splitter.LetterFileSplitter">
+<em class="property">class </em><code class="descclassname">mapreduce.core.splitter.</code><code class="descname">LetterFileSplitter</code><span class="sig-paren">(</span><em>filename</em>, <em>pool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mapreduce/core/splitter/letterfile.html#LetterFileSplitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.splitter.LetterFileSplitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mapreduce.core.splitter.file.FileSplitter" title="mapreduce.core.splitter.file.FileSplitter"><code class="xref py py-class docutils literal"><span class="pre">mapreduce.core.splitter.file.FileSplitter</span></code></a></p>
+<p>Reads text from a text-file (encoded in UTF-8 by default) using the file
+reader and generate word splits</p>
+<p>If not enough words are found, they&#8217;re saved to be sent along with the next
+found words in the next line until no more words are found</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>_filename (str): the file to be read and split into words</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">mapreduce.core.splitter package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.splitter.abstract">mapreduce.core.splitter.abstract module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.splitter.file">mapreduce.core.splitter.file module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.splitter.letterfile">mapreduce.core.splitter.letterfile module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.splitter.wordfile">mapreduce.core.splitter.wordfile module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.splitter">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="mapreduce.html">mapreduce package</a><ul>
+  <li><a href="mapreduce.core.html">mapreduce.core package</a><ul>
+      <li>Previous: <a href="mapreduce.core.pool.html" title="previous chapter">mapreduce.core.pool package</a></li>
+      <li>Next: <a href="mapreduce.core.trigger.html" title="next chapter">mapreduce.core.trigger package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/mapreduce.core.splitter.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, davidlj95, ccebrecos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/mapreduce.core.splitter.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

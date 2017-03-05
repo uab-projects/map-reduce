@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mapreduce.core.splitter.abstract &#8212; Map Reduce v documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'v',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Map Reduce v documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mapreduce.core.splitter.abstract</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Generic structure to use when defining a splitter in a map-reduce programming</span>
+<span class="sd">paradigm</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">..listener.done</span> <span class="k">import</span> <span class="n">DoneListener</span>
+
+<span class="c1"># Constants</span>
+<span class="n">SPLIT_SIZE_DEFAULT</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    int: default split size, see AbstractSplitter for more</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AbstractSplitter"><a class="viewcode-back" href="../../../../mapreduce.core.splitter.html#mapreduce.core.splitter.abstract.AbstractSplitter">[docs]</a><span class="k">class</span> <span class="nc">AbstractSplitter</span><span class="p">(</span><span class="n">DoneListener</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface for defining splitter classes</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        _pool (AbstractPool): the pool where to send the splitted pieces</span>
+<span class="sd">        _split_size (int): minimum split size to send. until split is not the</span>
+<span class="sd">        minimum size specified here, it will be buffered</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;_pool&quot;</span><span class="p">,</span> <span class="s2">&quot;_split_size&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the splitter with the pool where the splitted pieces read</span>
+<span class="sd">        will be sent to be processed, commonly by a map procedure</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pool (AbstractPool): pool where to send splits</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span> <span class="o">=</span> <span class="n">pool</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_size</span> <span class="o">=</span> <span class="n">SPLIT_SIZE_DEFAULT</span>
+
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="AbstractSplitter.read"><a class="viewcode-back" href="../../../../mapreduce.core.splitter.html#mapreduce.core.splitter.abstract.AbstractSplitter.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads by splits from source and goes sending splits to the pool,</span>
+<span class="sd">        checking first that the pool exists</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertException: if pool is None when reading</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;A pool must be defined before reading&quot;</span></div>
+
+    <span class="k">def</span> <span class="nf">_on_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Triggered when all data has been read and splits have been sent, tells</span>
+<span class="sd">        the pool that no more that is incoming</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the pool where the splits are sent &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">split_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the split size &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_size</span>
+
+    <span class="nd">@split_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">split_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">split_size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the split size &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_size</span> <span class="o">=</span> <span class="n">split_size</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, davidlj95, ccebrecos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

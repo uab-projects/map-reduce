@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>mapreduce.core.listener package &#8212; Map Reduce v documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Map Reduce v documentation" href="index.html" />
+    <link rel="up" title="mapreduce.core package" href="mapreduce.core.html" />
+    <link rel="next" title="mapreduce.core.log package" href="mapreduce.core.log.html" />
+    <link rel="prev" title="mapreduce.core package" href="mapreduce.core.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mapreduce-core-listener-package">
+<h1>mapreduce.core.listener package<a class="headerlink" href="#mapreduce-core-listener-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-mapreduce.core.listener.async_task">
+<span id="mapreduce-core-listener-async-task-module"></span><h2>mapreduce.core.listener.async_task module<a class="headerlink" href="#module-mapreduce.core.listener.async_task" title="Permalink to this headline">¶</a></h2>
+<p>Defines listeners for an asynchronous task. With asynchronous tasks, we don&#8217;t
+know either when the task starts to be performed or when the task is completed,
+with errors or succesfully.</p>
+<p>This listeners allow to model what an asynchronous task can notify. Therefore
+depending on the implementation we can modify its functionality.</p>
+<dl class="class">
+<dt id="mapreduce.core.listener.async_task.AsyncTask">
+<em class="property">class </em><code class="descclassname">mapreduce.core.listener.async_task.</code><code class="descname">AsyncTask</code><a class="reference internal" href="_modules/mapreduce/core/listener/async_task.html#AsyncTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.listener.async_task.AsyncTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>An asynchronous task is a task that is scheduled to run, without knowing
+when the task will start running or end running. Therefore the events
+defined here allow to model the events we can be notified with asynchronous
+tasks.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.core.listener.done">
+<span id="mapreduce-core-listener-done-module"></span><h2>mapreduce.core.listener.done module<a class="headerlink" href="#module-mapreduce.core.listener.done" title="Permalink to this headline">¶</a></h2>
+<p>The done listener is for classes that need to trigger a done event. The done
+event means that all tasks were performed and is ready to continue.</p>
+<p>This is useful in asynchronous environments, where we don&#8217;t know when the jobs
+will be ready so we must define callbacks. This callback would be triggered in
+that case when all jobs had finished.</p>
+<dl class="class">
+<dt id="mapreduce.core.listener.done.DoneListener">
+<em class="property">class </em><code class="descclassname">mapreduce.core.listener.done.</code><code class="descname">DoneListener</code><a class="reference internal" href="_modules/mapreduce/core/listener/done.html#DoneListener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mapreduce.core.listener.done.DoneListener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Defines a class that is able to process a triggered done event, meaning
+that when the trigger is called, all pending tasks have been executed</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-mapreduce.core.listener">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-mapreduce.core.listener" title="Permalink to this headline">¶</a></h2>
+<p>Provides a way of modelling classes that can handle external events. These are
+interfaces that show developers that the classes who inherit these listeners
+will handle them appropiately according to their defined behaviour</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">mapreduce.core.listener package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.listener.async_task">mapreduce.core.listener.async_task module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.listener.done">mapreduce.core.listener.done module</a></li>
+<li><a class="reference internal" href="#module-mapreduce.core.listener">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="mapreduce.html">mapreduce package</a><ul>
+  <li><a href="mapreduce.core.html">mapreduce.core package</a><ul>
+      <li>Previous: <a href="mapreduce.core.html" title="previous chapter">mapreduce.core package</a></li>
+      <li>Next: <a href="mapreduce.core.log.html" title="next chapter">mapreduce.core.log package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/mapreduce.core.listener.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, davidlj95, ccebrecos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/mapreduce.core.listener.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
