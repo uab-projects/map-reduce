@@ -8,7 +8,7 @@ import sys
 import os
 from ..main import parser as main_parser
 from .parser import create_parser, create_parser_options
-from core.implements.text_counter import create_pools
+from core.implements import text_counter, text_counter_strict
 from core.splitter import WordFileSplitter, LetterFileSplitter
 
 
@@ -23,6 +23,13 @@ def show_result(result, no_out=False, filename=None):
         filename (str): the file the result is from. If none, no file is
         printed
     """
+    # Convert to dictionary
+    if isinstance(result, list):
+        result_dict = {}
+        for map_tuple in result:
+            key, val = map_tuple
+            result_dict[key] = val
+        result = result_dict
     if no_out:
         print("A total of %d items reduced", len(result.keys()))
     else:
@@ -46,6 +53,9 @@ def controller(args):
     main_parser.create_parser_options(parser)
     create_parser_options(parser)
     args = parser.parse_args()
+    implement = text_counter if args.task == "text-counter" \
+        else text_counter_strict
+    LOGGER.info("Selected implementation is %s", implement.__name__)
 
     # Get input files
     files = args.input_files
@@ -55,7 +65,8 @@ def controller(args):
     if args.merge:
         # Create pools
         LOGGER.info("Creating map-reduce merged process pools")
-        pools.append(create_pools(lambda r: show_result(r, args.no_out)))
+        pools.append(implement.create_pools(
+            lambda r: show_result(r, args.no_out)))
 
     # Loop files
     for filename in files:
@@ -66,10 +77,12 @@ def controller(args):
 
         # Create pool per file if not merged
         if not args.merge:
+            # No filename if just one specified
+            filename_print = filename if len(files) > 1 else None
             # Create pools
             LOGGER.info("Creating map-reduce process pools")
-            pools.append(create_pools(lambda r: show_result(r, args.no_out,
-                         filename)))
+            pools.append(implement.create_pools(
+                lambda r: show_result(r, args.no_out, filename_print)))
 
         # Pick pool
         pool = pools[-1]

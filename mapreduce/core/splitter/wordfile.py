@@ -6,6 +6,13 @@ and reads the file while generating word splits
 from .file import FileSplitter
 from ..trigger.close import CloseTrigger
 
+# Constants
+REMOVE_CHARS = dict.fromkeys(map(ord, '@#$.,;:'), None)
+"""
+    dict: characters to remove in the result for it to be the same as our
+    teacher
+"""
+
 
 class WordFileSplitter(FileSplitter):
     """
@@ -30,7 +37,7 @@ class WordFileSplitter(FileSplitter):
         Returns:
             list: list of strings (split)
         """
-        return data.split()
+        return [el.translate(REMOVE_CHARS) for el in data.split()]
 
 
 if __name__ == "__main__":

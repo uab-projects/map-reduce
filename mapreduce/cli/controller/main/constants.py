@@ -10,5 +10,5 @@ LOG_DEFAULT = LOGS[3]
 """
 Sets the task to perform by the map - reduce paradigm
 """
-TASKS = ["text-counter"]
+TASKS = ["text-counter-strict", "text-counter"]
 TASK_DEFAULT = TASKS[0]

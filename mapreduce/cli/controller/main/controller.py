@@ -42,8 +42,11 @@ def controller():
         LOGGER.info("Changed log level to %s", log_level)
 
     # Switch task and parse
-    if task == "text-counter":
-        LOGGER.info("Text-Counter implementation selected")
+    if task == "text-counter" or task == "text-counter-strict":
+        if task == "text-counter":
+            LOGGER.info("Text-Counter implementation selected")
+        else:
+            LOGGER.info("Text-Counter [STRICT] implementation selected")
         controller = text_counter.controller
         parser = text_counter.create_full_parser()
     else:
